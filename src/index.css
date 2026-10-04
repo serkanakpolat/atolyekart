@@ -1,0 +1,315 @@
+/* Renkler BizCard'ın sarı/siyah paletinden (Bizcard v1/tokens.css). */
+:root {
+  color-scheme: light;
+  --bg: #F4F4F4;          /* page */
+  --card: #FFFFFF;        /* card */
+  --ink: #0A0A0A;         /* text */
+  --muted: #4A4A4A;       /* text-muted */
+  --line: #E4E4E4;        /* hairline */
+  --primary: #FCDB66;     /* sarı: yalnızca dolgu */
+  --on-primary: #0A0A0A;  /* sarı üstündeki yazı */
+  --primary-pressed: #F5CC3F;
+  /* Çerçeve: ceviz çıta, ışık sol üstten gelir */
+  --frame-light: #7E5838; /* üst kenar */
+  --frame: #5A3C22;       /* sol kenar, ana ton */
+  --frame-dark: #3D2715;  /* alt ve sağ kenar (gölgede) */
+  --frame-width: 14px;
+  --mat: #F6F1E7;         /* krem paspartu */
+  --on-mat: #0A0A0A;      /* krem zemin her temada açık, yazı hep koyu */
+  --mat-shade: rgba(61, 39, 21, 0.18);
+  --frame-lit: #A47A4E;   /* spot ışığı altında üst kenar */
+  --spot: rgba(255, 244, 214, 0.55);
+  --focus: #0A0A0A;
+  --danger: #B3261E;
+  --qr-ink: #000000;      /* QR her temada açık zemin + koyu kod */
+  --qr-ground: #FFFFFF;
+  --shadow-soft: 0 1px 2px rgba(10, 10, 10, 0.04), 0 12px 32px -16px rgba(10, 10, 10, 0.14);
+  --shadow-hover: 0 2px 4px rgba(10, 10, 10, 0.06), 0 18px 36px -14px rgba(10, 10, 10, 0.22);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #000000;
+    --card: #0A0A0A;
+    --ink: #F4F4F4;
+    --muted: #B5B5B5;
+    --line: #2A2A2A;
+    --mat: #E9E1D2;
+    --focus: #FCDB66;
+    --danger: #F2857C;
+    --shadow-hover: 0 18px 36px -14px rgba(0, 0, 0, 0.8);
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.6;
+}
+
+.site-header {
+  text-align: center;
+  padding: 48px 16px 24px;
+}
+.site-header h1 { margin: 0; font-size: 2.4rem; letter-spacing: 0.02em; }
+.site-header p { margin: 8px 0 0; color: var(--muted); }
+
+.catalog {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: 24px;
+}
+
+.product {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.product:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+}
+@media (prefers-reduced-motion: reduce) {
+  .product { transition: none; }
+  .product:hover { transform: none; }
+}
+
+/* Çerçeve: tüm kartlarda aynı boyut; resim orantısı bozulmadan içine sığar.
+   Kenarların farklı tonları köşelerde 45° gönye birleşimi oluşturur. */
+.frame {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border: var(--frame-width) solid;
+  border-color: var(--frame-light) var(--frame-dark) var(--frame-dark) var(--frame);
+  margin-bottom: 20px;
+  background: var(--mat);
+  box-shadow:
+    0 1px 0 var(--frame-dark),
+    0 10px 18px -10px rgba(10, 10, 10, 0.45);
+  transition: border-color 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.frame img {
+  /* Mutlak konum: resmin kendi boyutu çerçeveyi büyütemez */
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+  object-fit: contain;
+  display: block;
+  background: var(--mat);
+  /* Paspartunun çıta altında kalan kenarına düşen gölge + ince iç çizgi */
+  box-shadow:
+    inset 0 3px 6px -2px var(--mat-shade),
+    inset 2px 0 4px -2px var(--mat-shade),
+    inset 0 0 0 1px rgba(61, 39, 21, 0.25);
+  transition: filter 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Spot ışığı: kartın üstüne gelince yukarıdan sıcak bir ışık hüzmesi düşer */
+.frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 70% 85% at 50% -10%, var(--spot), transparent 70%);
+  mix-blend-mode: soft-light;
+  opacity: 0;
+  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.product:hover .frame {
+  border-top-color: var(--frame-lit);
+  box-shadow:
+    0 1px 0 var(--frame-dark),
+    0 -6px 22px -8px var(--spot),
+    0 14px 24px -12px rgba(10, 10, 10, 0.5);
+}
+.product:hover .frame img { filter: brightness(1.07) contrast(1.03); }
+.product:hover .frame::after { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .frame, .frame img, .frame::after { transition: none; }
+}
+
+.product .category {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+.product h2 { margin: 4px 0 8px; font-size: 1.3rem; }
+.product p { margin: 0 0 12px; color: var(--muted); flex: 1; }
+/* Fiyat: sağ altta asılı etiket görünümü */
+.product .price {
+  flex-shrink: 0;
+  position: relative;
+  padding: 4px 14px 4px 24px;
+  background: var(--primary);
+  color: var(--on-primary);
+  font-weight: bold;
+  font-size: 1.05rem;
+  border-radius: 4px 6px 6px 4px;
+  clip-path: polygon(10px 0, 100% 0, 100% 100%, 10px 100%, 0 50%);
+}
+.product .price::before {
+  content: "";
+  position: absolute;
+  left: 9px;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  margin-top: -3px;
+  border-radius: 50%;
+  background: var(--card);
+}
+
+/* Kart alt satırı: aksiyon solda, fiyat etiketi sağda */
+.product__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.product__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.badge {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+}
+
+/* Butonlar: sarı yalnızca dolgu, üstündeki yazı --on-primary */
+.btn {
+  font: inherit;
+  font-weight: bold;
+  font-size: 0.95rem;
+  min-height: 44px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background-color 0.12s ease, border-color 0.12s ease;
+}
+.btn:focus-visible,
+.field input:focus-visible,
+.form-dialog__close:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+.btn:disabled { opacity: 0.6; cursor: progress; }
+.btn--primary { background: var(--primary); color: var(--on-primary); }
+.btn--primary:hover:not(:disabled) { background: var(--primary-pressed); }
+.btn--secondary { background: transparent; color: var(--ink); border-color: var(--ink); }
+.btn--secondary:hover { background: var(--mat); color: var(--on-mat); }
+
+/* Form penceresi */
+.form-dialog {
+  width: min(440px, calc(100% - 32px));
+  max-height: calc(100dvh - 32px);
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: 0 24px 60px -20px rgba(10, 10, 10, 0.5);
+}
+.form-dialog::backdrop { background: rgba(10, 10, 10, 0.55); }
+.form-dialog__body { padding: 24px; }
+.form-dialog__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.form-dialog__header h2 { margin: 0; font-size: 1.4rem; }
+.form-dialog__close {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.form-dialog__close:hover { background: var(--mat); color: var(--on-mat); }
+
+.form { display: flex; flex-direction: column; gap: 14px; }
+.form__product { margin: 0 0 4px; color: var(--muted); }
+.field { display: flex; flex-direction: column; gap: 4px; font-size: 0.95rem; }
+.field small { color: var(--muted); font-size: 0.85em; }
+.field input {
+  font: inherit;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--ink);
+}
+.field--short input { max-width: 120px; }
+.form .btn { align-self: flex-start; margin-top: 4px; }
+.form__error { margin: 0; color: var(--danger); }
+.form-success p { margin: 0 0 16px; }
+
+/* Katalog QR kodu */
+.qr {
+  max-width: 1100px;
+  margin: 32px auto 0;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  text-align: left;
+}
+.qr__code {
+  flex: none;
+  padding: 12px;
+  background: var(--qr-ground);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  line-height: 0;
+}
+.qr__code svg { display: block; width: 160px; height: 160px; }
+.qr__code svg path { fill: var(--qr-ink); }
+.qr__text { max-width: 32ch; }
+.qr__text h2 { margin: 0 0 6px; font-size: 1.3rem; }
+.qr__text p { margin: 0; color: var(--muted); }
+
+::selection { background: var(--primary); color: var(--on-primary); }
+
+.site-footer {
+  text-align: center;
+  color: var(--muted);
+  padding: 32px 16px;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 480px) {
+  :root { --frame-width: 10px; }
+  .frame img { padding: 12px; }
+}

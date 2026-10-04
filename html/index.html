@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ahşap ve Karakalem Atölyesi</title>
+  <style>
+    :root {
+      --bg: #f7f2ea;
+      --card: #fffdf9;
+      --ink: #2f2620;
+      --muted: #7a6a5c;
+      --accent: #8b5a2b;
+      --line: #e4d8c8;
+      --frame: #5a3c22;
+      --mat: #efe7da;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+    }
+    header {
+      text-align: center;
+      padding: 48px 16px 24px;
+    }
+    header h1 { margin: 0; font-size: 2.4rem; letter-spacing: 0.02em; }
+    header p { margin: 8px 0 0; color: var(--muted); }
+    main {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 16px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .product {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+    /* Çerçeve: tüm kartlarda aynı boyut; resim orantısı bozulmadan içine sığar */
+    .frame {
+      aspect-ratio: 4 / 3;
+      border: 10px solid var(--frame);
+      background: var(--mat);
+      padding: 12px;
+      margin-bottom: 16px;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(47, 38, 32, 0.15);
+    }
+    .frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    .product .category {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+    }
+    .product h2 { margin: 4px 0 8px; font-size: 1.3rem; }
+    .product p { margin: 0 0 12px; color: var(--muted); flex: 1; }
+    .product .price { font-weight: bold; font-size: 1.1rem; }
+    footer {
+      text-align: center;
+      color: var(--muted);
+      padding: 32px 16px;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Ahşap ve Karakalem Atölyesi</h1>
+    <p>Elde kesilmiş ahşap figürler ve özgün karakalem çizimler</p>
+  </header>
+
+  <main>
+    <article class="product">
+      <div class="frame">
+        <img src="../public/urunresimleri/bisikletahşap.png" alt="Masif ahşaptan oyulmuş bisikletli figürü">
+      </div>
+      <span class="category">Ahşap Oyma</span>
+      <h2>Bisikletli — Ahşap Figür</h2>
+      <p>Tek parça masif ahşaptan elde kesilip oyulmuş bisikletli silüeti. Ağacın doğal damarları ve budak izleri korunarak zımparalandı, doğal yağ ile bitirildi. Masa ya da raf üstü için.</p>
+      <span class="price">1.500 ₺</span>
+    </article>
+
+    <article class="product">
+      <div class="frame">
+        <img src="../public/urunresimleri/algiresim.png" alt="Kraft kağıt üzerine karakalem göz ve uyuyan yüz çalışmaları">
+      </div>
+      <span class="category">Karakalem</span>
+      <h2>Algı — İkili Karakalem Seti</h2>
+      <p>Kraft kağıt üzerine karakalem ve beyaz tebeşirle iki çalışma: bir göz etüdü ve gözleri kapalı, dinginlik içinde bir yüz. İmzalı, özgün eserler.</p>
+      <span class="price">750 ₺</span>
+    </article>
+
+    <article class="product">
+      <div class="frame">
+        <img src="../public/urunresimleri/supersaiyan.png" alt="Anime karakteri karakalem portresi">
+      </div>
+      <span class="category">Karakalem</span>
+      <h2>Anime Kahramanı — Karakalem Portre</h2>
+      <p>Sevilen bir anime karakterinin karakalem portresi; dağınık saçlar ve keskin bakış ince tarama tekniğiyle işlendi. Benzer bir portre özel sipariş olarak da hazırlanabilir.</p>
+      <span class="price">750 ₺</span>
+    </article>
+  </main>
+
+  <footer>Her ürün tek tek, elde üretilir. © Ahşap ve Karakalem Atölyesi</footer>
+</body>
+</html>
