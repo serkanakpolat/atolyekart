@@ -1,6 +1,6 @@
 # AtölyeKart — Ahşap ve Karakalem Atölyesi
 
-Kursun ödev projesi (6 hafta). BizCard'a paralel ilerleyen ikinci proje: el yapımı ürün satan bir atölyenin web sitesi. Her hafta bir öncekinin üzerine inşa edilir.
+BizCard'a paralel ilerleyen ikinci proje: el yapımı ürün satan bir atölyenin web sitesi.
 
 ## Atölye
 - **Ad:** Ahşap ve Karakalem Atölyesi
@@ -33,4 +33,4 @@ Kursun ödev projesi (6 hafta). BizCard'a paralel ilerleyen ikinci proje: el yap
 - Webhook payload sözleşmesi (alan adları değiştirilmez):
   - Sipariş: `event, name, productId, productName, phone, email, quantity, source`
   - Stok bildirimi: `event, name, productId, productName, email, source`
-- Hafta 1'de webhook doğrudan webhook.site'a gönderilir; secret koruma / backend Hafta 2'de.
+
