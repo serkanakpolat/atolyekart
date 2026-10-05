@@ -27,6 +27,7 @@ Kursun ödev projesi (6 hafta). BizCard'a paralel ilerleyen ikinci proje: el yap
 - Yapı: ürün verisi `src/data/products.js`; bileşenler `src/components/` (ProductList → ProductCard → ProductImage); stiller `src/index.css`.
 - Ürün görselleri `public/urunresimleri/` içinde, kodda `/urunresimleri/...` yoluyla.
 - Seçili ürün + açık form durumu `App.jsx`'te (`activeForm`); `onOrder`/`onNotify` App → ProductList → ProductCard prop'larla iner. Formlar `FormDialog` (native `<dialog>`) içinde: `OrderForm`, `StockNotifyForm`.
+- Yayın: GitHub Pages → https://serkanakpolat.github.io/atolyekart/ (repo: serkanakpolat/atolyekart). `npm run deploy` yerelde build alıp `gh-pages` dalına gönderir; `.env.local` build'e gömülür. Build'de Vite `base` = `/atolyekart/`, görseller `import.meta.env.BASE_URL` ile çözülür.
 - Webhook: payload kurucuları ve gönderim `src/lib/webhook.js`'te; URL `.env.local` içindeki `VITE_WEBHOOK_URL` (git'e girmez). `productId`/`productName` ürünün `id`/`name` alanından gelir.
 - Renkler BizCard'ın sarı/siyah paletinden (`Bizcard v1/tokens.css`), `src/index.css` başındaki değişkenlerde. Koda sabit renk yazma, değişken kullan. Sarı (`--primary`) yalnızca dolgu; üstündeki yazı `--on-primary` (siyah). Koyu tema `prefers-color-scheme` ile.
 - Webhook payload sözleşmesi (alan adları değiştirilmez):
