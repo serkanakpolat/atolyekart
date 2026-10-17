@@ -1,4 +1,5 @@
 import { buildStockPayload } from '../lib/webhook.js'
+import { EMAIL_PATTERN, EMAIL_HINT } from '../lib/validation.js'
 import useWebhookSubmit from './useWebhookSubmit.js'
 
 export default function StockNotifyForm({ product, onDone }) {
@@ -24,7 +25,7 @@ export default function StockNotifyForm({ product, onDone }) {
       </label>
       <label className="field">
         <span>E-posta</span>
-        <input name="email" type="email" required autoComplete="email" />
+        <input name="email" type="email" required autoComplete="email" pattern={EMAIL_PATTERN} title={EMAIL_HINT} />
       </label>
       {status === 'error' && <p className="form__error" role="alert">{error}</p>}
       <button type="submit" className="btn btn--primary" disabled={status === 'sending'}>

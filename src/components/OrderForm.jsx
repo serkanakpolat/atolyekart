@@ -1,4 +1,5 @@
 import { buildOrderPayload } from '../lib/webhook.js'
+import { EMAIL_PATTERN, EMAIL_HINT } from '../lib/validation.js'
 import useWebhookSubmit from './useWebhookSubmit.js'
 
 export default function OrderForm({ product, onDone }) {
@@ -26,7 +27,7 @@ export default function OrderForm({ product, onDone }) {
       </label>
       <label className="field">
         <span>E-posta <small>(isteğe bağlı)</small></span>
-        <input name="email" type="email" autoComplete="email" />
+        <input name="email" type="email" autoComplete="email" pattern={EMAIL_PATTERN} title={EMAIL_HINT} />
       </label>
       <label className="field field--short">
         <span>Adet</span>
