@@ -3,7 +3,7 @@ import { EMAIL_PATTERN, EMAIL_HINT } from '../lib/validation.js'
 import useWebhookSubmit from './useWebhookSubmit.js'
 
 export default function StockNotifyForm({ product, onDone }) {
-  const { status, error, handleSubmit } = useWebhookSubmit((fields) => buildStockPayload(product, fields))
+  const { status, error, handleSubmit } = useWebhookSubmit((fields) => buildStockPayload(product, fields), 'stock')
 
   if (status === 'success') {
     return (

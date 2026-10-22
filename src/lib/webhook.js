@@ -1,5 +1,8 @@
 // Webhook payload'ları — alan adları ödevdeki sözleşmeyle birebir aynı, değiştirme.
 // Hafta 1: doğrudan webhook.site'a gönderilir. Secret koruma / backend Hafta 2'de.
+// Hafta 2: JWT + Rate Limiting eklendi.
+
+import { generateToken } from './jwt.js'
 
 const SOURCE = 'atolyekart-web'
 
@@ -13,6 +16,7 @@ export function buildOrderPayload(product, { name, phone, email, quantity }) {
     email,
     quantity: Number(quantity),
     source: SOURCE,
+    jwt: generateToken({ type: 'order_created', productId: product.id }),
   }
 }
 
@@ -24,6 +28,7 @@ export function buildStockPayload(product, { name, email }) {
     productName: product.name,
     email,
     source: SOURCE,
+    jwt: generateToken({ type: 'stock_notification_requested', productId: product.id }),
   }
 }
 

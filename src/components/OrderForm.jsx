@@ -3,7 +3,7 @@ import { EMAIL_PATTERN, EMAIL_HINT } from '../lib/validation.js'
 import useWebhookSubmit from './useWebhookSubmit.js'
 
 export default function OrderForm({ product, onDone }) {
-  const { status, error, handleSubmit } = useWebhookSubmit((fields) => buildOrderPayload(product, fields))
+  const { status, error, handleSubmit } = useWebhookSubmit((fields) => buildOrderPayload(product, fields), 'order')
 
   if (status === 'success') {
     return (
