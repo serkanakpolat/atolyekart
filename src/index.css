@@ -324,3 +324,17 @@ body {
   :root { --frame-width: 10px; }
   .frame img { padding: 12px; }
 }
+
+/* KVKK açık rıza */
+.consent { display: flex; align-items: flex-start; gap: 10px; font-size: 0.85rem; color: var(--muted); line-height: 1.45; }
+.consent input { flex: none; width: 20px; height: 20px; margin: 1px 0 0; accent-color: var(--ink); }
+.consent a, .site-footer a { color: var(--ink); text-underline-offset: 2px; }
+
+/* Gizlilik politikası */
+.policy { max-width: 70ch; margin: 0 auto; padding: 32px 16px 48px; line-height: 1.6; }
+.policy h1 { font-size: 1.8rem; line-height: 1.25; margin: 16px 0 4px; }
+.policy h2 { font-size: 1.15rem; margin: 28px 0 8px; }
+.policy__meta { color: var(--muted); margin-top: 0; }
+.policy ul { padding-left: 1.2em; }
+.policy li + li { margin-top: 4px; }
+.policy__back { color: var(--ink); }

@@ -1,6 +1,7 @@
 import { buildStockPayload } from '../lib/webhook.js'
 import { EMAIL_PATTERN, EMAIL_HINT } from '../lib/validation.js'
 import useWebhookSubmit from './useWebhookSubmit.js'
+import ConsentCheckbox from './ConsentCheckbox.jsx'
 
 export default function StockNotifyForm({ product, onDone }) {
   const { status, error, handleSubmit } = useWebhookSubmit((fields) => buildStockPayload(product, fields), 'stock')
@@ -27,6 +28,7 @@ export default function StockNotifyForm({ product, onDone }) {
         <span>E-posta</span>
         <input name="email" type="email" required autoComplete="email" pattern={EMAIL_PATTERN} title={EMAIL_HINT} />
       </label>
+      <ConsentCheckbox dataList="Ad soyad ve e-posta" />
       {status === 'error' && <p className="form__error" role="alert">{error}</p>}
       <button type="submit" className="btn btn--primary" disabled={status === 'sending'}>
         {status === 'sending' ? 'Gönderiliyor…' : 'Haber Ver'}

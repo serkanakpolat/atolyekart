@@ -1,6 +1,7 @@
 import { buildOrderPayload } from '../lib/webhook.js'
 import { EMAIL_PATTERN, EMAIL_HINT } from '../lib/validation.js'
 import useWebhookSubmit from './useWebhookSubmit.js'
+import ConsentCheckbox from './ConsentCheckbox.jsx'
 
 export default function OrderForm({ product, onDone }) {
   const { status, error, handleSubmit } = useWebhookSubmit((fields) => buildOrderPayload(product, fields), 'order')
@@ -33,6 +34,7 @@ export default function OrderForm({ product, onDone }) {
         <span>Adet</span>
         <input name="quantity" type="number" min="1" max="10" defaultValue="1" required />
       </label>
+      <ConsentCheckbox dataList="Ad soyad, telefon ve e-posta" />
       {status === 'error' && <p className="form__error" role="alert">{error}</p>}
       <button type="submit" className="btn btn--primary" disabled={status === 'sending'}>
         {status === 'sending' ? 'Gönderiliyor…' : 'Siparişi Gönder'}

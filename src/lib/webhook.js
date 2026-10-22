@@ -1,10 +1,8 @@
 // Webhook payload'ları — alan adları ödevdeki sözleşmeyle birebir aynı, değiştirme.
-// Hafta 1: doğrudan webhook.site'a gönderilir. Secret koruma / backend Hafta 2'de.
-// Hafta 2: JWT + Rate Limiting eklendi.
-
-import { generateToken } from './jwt.js'
+// JWT sunucuda (api/token.js) HMAC-SHA256 ile imzalanır; tarayıcı sırrı hiç görmez.
 
 const SOURCE = 'atolyekart-web'
+const API = `${import.meta.env.BASE_URL}api`
 
 export function buildOrderPayload(product, { name, phone, email, quantity }) {
   return {
@@ -16,7 +14,6 @@ export function buildOrderPayload(product, { name, phone, email, quantity }) {
     email,
     quantity: Number(quantity),
     source: SOURCE,
-    jwt: generateToken({ type: 'order_created', productId: product.id }),
   }
 }
 
@@ -28,26 +25,24 @@ export function buildStockPayload(product, { name, email }) {
     productName: product.name,
     email,
     source: SOURCE,
-    jwt: generateToken({ type: 'stock_notification_requested', productId: product.id }),
   }
 }
 
 export async function sendWebhook(payload) {
-  const url = import.meta.env.VITE_WEBHOOK_URL
-  if (!url) {
-    throw new Error('Webhook adresi tanımlı değil (.env.local içinde VITE_WEBHOOK_URL).')
-  }
-  // webhook.site cevabına CORS başlığı koymuyor; tarayıcı cevabı okumamıza izin vermez.
-  // no-cors: istek yine gider, cevap okunamaz (durum kodu bilinmez). Ağ hatası yine yakalanır.
-  // Hafta 2'de backend/API route'a taşınınca normal fetch + cevap kontrolüne dönülecek.
   try {
-    await fetch(url, {
+    const params = new URLSearchParams({ type: payload.event, productId: String(payload.productId) })
+    const tokenRes = await fetch(`${API}/token?${params}`)
+    if (!tokenRes.ok) throw new Error('Sunucuya ulaşılamadı. Biraz sonra tekrar dene.')
+    const { token } = await tokenRes.json()
+
+    const res = await fetch(`${API}/webhook`, {
       method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify(payload),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...payload, jwt: token }),
     })
-  } catch {
-    throw new Error('Gönderilemedi. İnternet bağlantını kontrol edip tekrar dene.')
+    if (!res.ok) throw new Error('Sunucu isteği kabul etmedi. Sayfayı yenileyip tekrar dene.')
+  } catch (err) {
+    if (err instanceof TypeError) throw new Error('Gönderilemedi. İnternet bağlantını kontrol edip tekrar dene.')
+    throw err
   }
 }

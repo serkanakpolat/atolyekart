@@ -1,22 +1,35 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import ProductList from './components/ProductList.jsx'
 import FormDialog from './components/FormDialog.jsx'
 import OrderForm from './components/OrderForm.jsx'
 import StockNotifyForm from './components/StockNotifyForm.jsx'
 import CatalogQr from './components/CatalogQr.jsx'
 import CategoryFilter from './components/CategoryFilter.jsx'
+import PrivacyPolicy from './components/PrivacyPolicy.jsx'
 import { products } from './data/products.js'
 
 // Kategoriler veriden çıkarılır; yeni kategori eklemek için yalnızca products.js'e ürün eklemek yeter.
 const categories = [...new Set(products.map((p) => p.category))]
 
 export default function App() {
+  const [hash, setHash] = useState(window.location.hash)
+  useEffect(() => {
+    const onHash = () => {
+      setHash(window.location.hash)
+      window.scrollTo(0, 0)
+    }
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
+
   // Seçili ürün + hangi form: { type: 'order' | 'stock', product } | null
   const [activeForm, setActiveForm] = useState(null)
   const closeForm = () => setActiveForm(null)
   // Seçili kategori; null = hepsi
   const [category, setCategory] = useState(null)
   const visibleProducts = category ? products.filter((p) => p.category === category) : products
+
+  if (hash === '#gizlilik') return <PrivacyPolicy />
 
   return (
     <>
@@ -48,6 +61,7 @@ export default function App() {
 
       <footer className="site-footer">
         Her ürün tek tek, elde üretilir. © Ahşap ve Karakalem Atölyesi
+        {' · '}<a href="#gizlilik">Gizlilik ve KVKK</a>
       </footer>
     </>
   )
