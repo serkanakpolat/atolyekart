@@ -1,13 +1,19 @@
 // Sipariş ve stok bildirimi istekleri buraya gelir.
 // Vercel'de serverless fonksiyon olarak, yerelde `npm run dev` içinde Vite middleware'i olarak çalışır.
 import { verifyToken } from './_jwt.js'
+import { validatePayload } from './_validate.js'
+import { clientIp, rateLimit, tooMany } from './_rateLimit.js'
 
+const MAX_BODY = 8 * 1024
 const recent = []
 
 async function readBody(req) {
   if (req.body !== undefined) return typeof req.body === 'string' ? JSON.parse(req.body) : req.body
   let raw = ''
-  for await (const chunk of req) raw += chunk
+  for await (const chunk of req) {
+    raw += chunk
+    if (raw.length > MAX_BODY) throw new Error('too large')
+  }
   return JSON.parse(raw)
 }
 
@@ -22,11 +28,24 @@ export default async function handler(req, res) {
   if (req.method === 'GET' && !process.env.VERCEL) return send(res, 200, recent)
   if (req.method !== 'POST') return send(res, 405, { error: 'Yalnızca POST' })
 
+  const ip = clientIp(req)
+  const limit = rateLimit(`webhook:${ip}`, 10, 60)
+  if (limit.limited) {
+    console.warn(`[webhook] hız sınırı: ${ip}`)
+    return tooMany(res, limit.retryAfter)
+  }
+
   let body
   try {
     body = await readBody(req)
   } catch {
     return send(res, 400, { error: 'Geçersiz JSON' })
+  }
+
+  const invalid = validatePayload(body)
+  if (invalid) {
+    console.warn(`[webhook] reddedildi (${ip}): ${invalid}`)
+    return send(res, 400, { error: invalid })
   }
 
   let tokenError

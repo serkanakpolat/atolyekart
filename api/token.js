@@ -1,4 +1,5 @@
 import { issueToken } from './_jwt.js'
+import { clientIp, rateLimit, tooMany } from './_rateLimit.js'
 
 const EVENTS = new Set(['order_created', 'stock_notification_requested'])
 
@@ -14,7 +15,10 @@ export default function handler(req, res) {
     res.statusCode = 405
     return res.end(JSON.stringify({ error: 'Yalnızca GET' }))
   }
-  if (!EVENTS.has(type) || !productId) {
+  const limit = rateLimit(`token:${clientIp(req)}`, 20, 60)
+  if (limit.limited) return tooMany(res, limit.retryAfter)
+
+  if (!EVENTS.has(type) || !productId || productId.length > 100) {
     res.statusCode = 400
     return res.end(JSON.stringify({ error: 'type ve productId gerekli' }))
   }

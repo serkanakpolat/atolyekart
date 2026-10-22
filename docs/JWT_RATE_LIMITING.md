@@ -33,7 +33,20 @@ Not: kullanılmış nonce listesi fonksiyon belleğinde tutulur. Vercel'de eşza
 
 - İstemci tarafı (`src/lib/rateLimiter.js`, `useWebhookSubmit.js`): sipariş dakikada 10, stok bildirimi dakikada 5 istek.
 - Tarayıcı belleğinde tutulur, sayfa yenilenince sıfırlanır; yalnızca yanlışlıkla çift tıklamayı önler, saldırıya karşı koruma değildir.
-- Sunucu tarafı hız sınırı henüz yok.
+- Sunucu tarafı (`api/_rateLimit.js`): IP başına kayan pencere — `/api/token` dakikada 20, `/api/webhook` dakikada 10 istek; aşılınca `429` + `Retry-After`. Sayaç fonksiyon belleğindedir, yani her Vercel fonksiyon kopyası için ayrıdır; dağıtık kesin sınır için Redis gerekir.
+
+## Sunucu doğrulaması
+
+`api/_validate.js`, token kontrolünden önce çalışır; hata varsa `400` döner ve loglanır:
+
+- Alan listesi sözleşmeyle birebir aynı olmalı (eksik ya da fazla alan reddedilir); `source` = `atolyekart-web`
+- `productId` `src/data/products.js`'te olmalı, `productName` onunla eşleşmeli
+- Sipariş yalnızca stoktaki ürüne, stok bildirimi yalnızca tükenmiş ürüne
+- `name` 2–80 karakter, `<>{}\` ve kontrol karakteri yok
+- `phone` Türkiye cep numarası (`05xx…`, `+905xx…`; boşluk/tire/parantez yok sayılır)
+- `quantity` 1–10 arası tam sayı (string kabul edilmez)
+- `email` istemciyle aynı desen; siparişte boş olabilir, stok bildiriminde zorunlu
+- Gövde en fazla 8 KB
 
 ## Ortam değişkenleri
 
