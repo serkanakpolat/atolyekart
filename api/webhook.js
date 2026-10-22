@@ -43,15 +43,5 @@ export default async function handler(req, res) {
   console.log(body)
 
   if (tokenError) return send(res, 401, { error: tokenError })
-
-  const forwardUrl = process.env.WEBHOOK_URL
-  if (forwardUrl) {
-    try {
-      await fetch(forwardUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
-    } catch (err) {
-      console.error('[webhook] iletilemedi:', err.message)
-    }
-  }
-
   return send(res, 200, { ok: true })
 }

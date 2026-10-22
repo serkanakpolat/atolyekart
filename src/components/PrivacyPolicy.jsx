@@ -43,8 +43,7 @@ export default function PrivacyPolicy() {
 
       <h2>5. Kimlere ve nereye aktarılıyor?</h2>
       <p>
-        Site, ABD merkezli Vercel Inc. altyapısında çalışır; form bilgileri sipariş takibi için
-        [kullanılan webhook / bildirim servisi] üzerinden atölyeye iletilir. Bu hizmetlerin sunucuları
+        Site ve form bilgilerini alan sunucumuz, ABD merkezli Vercel Inc. altyapısında çalışır. Bu sunucular
         yurt dışında olabileceğinden verilerin, KVKK m. 9 uyarınca açık rızana dayanarak yurt dışına aktarılır.
         Yasal bir zorunluluk olmadıkça başka kimseyle paylaşılmaz.
       </p>

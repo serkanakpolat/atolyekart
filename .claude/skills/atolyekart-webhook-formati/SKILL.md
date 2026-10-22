@@ -1,6 +1,6 @@
 ---
 name: atolyekart-webhook-formati
-description: AtölyeKart webhook payload sözleşmesi ve gönderim kuralları — sipariş, stok bildirimi ya da yeni bir form/webhook eklerken, payload alanlarını değiştirirken, webhook.site testi yaparken veya webhook'u backend'e taşırken kullan.
+description: AtölyeKart webhook payload sözleşmesi ve gönderim kuralları — sipariş, stok bildirimi ya da yeni bir form/webhook eklerken, payload alanlarını değiştirirken, api/webhook.js backend'ini düzenlerken veya gönderimi test ederken kullan.
 ---
 
 # AtölyeKart webhook formatı
@@ -42,13 +42,10 @@ Webhook'lar eğitmenin verdiği **veri sözleşmesine** uyar. Alan adları, sır
 - Payload'lar **yalnızca** `src/lib/webhook.js` içindeki kurucularla oluşturulur (`buildOrderPayload`, `buildStockPayload`). Bileşenlerde elle obje kurma.
 - Yeni webhook türü: yeni bir `buildXxxPayload` + aynı `source`, olay adı `nesne_gecmis_zaman` biçiminde (ör. `order_created`).
 - Gönderim `sendWebhook(payload)` ile; formlar `useWebhookSubmit` hook'unu kullanır (idle → sending → success | error).
-- URL koda yazılmaz: `.env.local` → `VITE_WEBHOOK_URL`. `.env.local` git'e girmez.
-
-## Hafta 1 kısıtları
-- Tarayıcıdan doğrudan webhook.site'a gidilir. webhook.site CORS başlığı göndermediği için `mode: 'no-cors'` + `Content-Type: text/plain` kullanılır: istek gider, cevap okunamaz. Ağ hatası yine yakalanır.
-- `VITE_` ile başlayan değişkenler tarayıcı paketine girer — gizli değildir. Secret koruma ve backend/API route'a taşıma **Hafta 2**'de; o zaman `no-cors` kalkar ve cevap durumu kontrol edilir.
+- Hedef kendi backend'imiz: `sendWebhook` önce `GET /api/token?type=<event>&productId=<id>` ile sunucu imzalı (HMAC-SHA256) token alır, payload'a `jwt` olarak ekleyip `POST /api/webhook`'a gönderir ve `res.ok` kontrol eder.
+- Harici webhook servisi (webhook.site vb.) kullanılmaz. Sır `JWT_SECRET` yalnızca sunucuda; `VITE_` ile başlayan değişkenler tarayıcı paketine girer, sır asla `VITE_` ile tanımlanmaz.
 
 ## Test
 1. `.env.local` değiştiyse dev sunucusunu yeniden başlat.
-2. İki formu da gönder; webhook.site'ta iki ayrı istek ve alanların tabloyla birebir aynı olduğunu doğrula.
+2. İki formu da gönder; `npm run dev` terminalinde ve http://localhost:5173/api/webhook listesinde iki ayrı istek ve alanların tabloyla birebir aynı olduğunu doğrula (canlıda: Vercel Logs).
 3. Fazla ya da eksik alan, string'e dönüşmüş `quantity` → hata say.

@@ -28,7 +28,8 @@ BizCard'a paralel ilerleyen ikinci proje: el yapımı ürün satan bir atölyeni
 - Ürün görselleri `public/urunresimleri/` içinde, kodda `/urunresimleri/...` yoluyla.
 - Seçili ürün + açık form durumu `App.jsx`'te (`activeForm`); `onOrder`/`onNotify` App → ProductList → ProductCard prop'larla iner. Formlar `FormDialog` (native `<dialog>`) içinde: `OrderForm`, `StockNotifyForm`.
 - Yayın: GitHub Pages → https://serkanakpolat.github.io/atolyekart/ (repo: serkanakpolat/atolyekart). `npm run deploy` yerelde build alıp `gh-pages` dalına gönderir; `.env.local` build'e gömülür. Build'de Vite `base` = `/atolyekart/`, görseller `import.meta.env.BASE_URL` ile çözülür.
-- Webhook: payload kurucuları ve gönderim `src/lib/webhook.js`'te; URL `.env.local` içindeki `VITE_WEBHOOK_URL` (git'e girmez). `productId`/`productName` ürünün `id`/`name` alanından gelir.
+- Webhook: payload kurucuları ve gönderim `src/lib/webhook.js`'te. İstemci önce `/api/token`'dan sunucu imzalı JWT alır, sonra `/api/webhook`'a POST eder (Vercel fonksiyonları `api/`; yerelde `vite.config.js` aynı handler'ları middleware olarak bağlar). Sır `JWT_SECRET` yalnızca sunucuda (`.env.local` ve Vercel env; `VITE_` öneki yok). Harici webhook servisi yok; gelen istekler yerelde terminalde ve `GET /api/webhook`'ta, canlıda Vercel Logs'ta görünür. `productId`/`productName` ürünün `id`/`name` alanından gelir.
+- Yayın asıl adresi Vercel: https://atolyekart-rose.vercel.app (GitHub Pages'te backend olmadığı için formlar çalışmaz).
 - Renkler BizCard'ın sarı/siyah paletinden (`Bizcard v1/tokens.css`), `src/index.css` başındaki değişkenlerde. Koda sabit renk yazma, değişken kullan. Sarı (`--primary`) yalnızca dolgu; üstündeki yazı `--on-primary` (siyah). Koyu tema `prefers-color-scheme` ile.
 - Webhook payload sözleşmesi (alan adları değiştirilmez):
   - Sipariş: `event, name, productId, productName, phone, email, quantity, source`
