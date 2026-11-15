@@ -62,5 +62,33 @@ export default async function handler(req, res) {
   console.log(body)
 
   if (tokenError) return send(res, 401, { error: tokenError })
+  await forwardToN8n(body)
   return send(res, 200, { ok: true })
+}
+
+// Her olay kendi n8n akışına gider; iki akış da aynı "Ortak Doğrulama" sub-workflow'unu çağırır.
+const N8N_URL_ENV = {
+  order_created: 'N8N_WEBHOOK_URL', // Sheet kaydı + AI teşekkür maili
+  stock_notification_requested: 'N8N_STOCK_WEBHOOK_URL', // stok talebi kaydı + AI alternatif ürün önerisi
+}
+
+// Doğrulanmış isteği n8n akışına iletir.
+// n8n hemen yanıt verir (Respond: Immediately); asıl iş n8n tarafında sürer.
+// n8n'e ulaşılamazsa müşteriye hata gösterilmez: istek zaten alındı ve loglandı.
+async function forwardToN8n(body) {
+  const envName = N8N_URL_ENV[body.event]
+  const url = process.env[envName]
+  if (!url) return console.warn(`[n8n] ${envName} tanımlı değil, iletilmedi`)
+  const { jwt, ...payload } = body
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(5000),
+    })
+    console.log(`[n8n] iletildi: ${res.status}`)
+  } catch (err) {
+    console.error('[n8n] iletilemedi:', err.message)
+  }
 }
