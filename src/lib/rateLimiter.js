@@ -34,3 +34,6 @@ export const orderRateLimiter = createRateLimiter(10, 60)
 
 // Örnek: dakikada 5 stock notification request'i
 export const stockRateLimiter = createRateLimiter(5, 60)
+
+// "Soru Sor": dakikada en fazla 6 soru
+export const askRateLimiter = createRateLimiter(6, 60)

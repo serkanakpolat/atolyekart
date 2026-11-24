@@ -29,9 +29,26 @@ export function buildStockPayload(product, { name, email }) {
   }
 }
 
+// "Soru Sor": ürüne bağlı değil. sessionId sayfa açıkken sabit kalır; n8n'deki hafıza buna göre tutulur.
+export function buildQuestionPayload({ question, sessionId }) {
+  return {
+    event: 'question_asked',
+    question: question.trim(),
+    sessionId,
+    source: SOURCE,
+  }
+}
+
+const INVALID = {
+  question_asked: 'Soru 3–500 karakter arasında olmalı.',
+  default: 'Bilgilerden biri geçersiz görünüyor; telefon ve e-postayı kontrol edip tekrar dene.',
+}
+
+// Sunucunun JSON yanıtını döner (soru için { ok, answer }).
 export async function sendWebhook(payload) {
   try {
-    const params = new URLSearchParams({ type: payload.event, productId: String(payload.productId) })
+    const params = new URLSearchParams({ type: payload.event })
+    if (payload.productId !== undefined) params.set('productId', String(payload.productId))
     const tokenRes = await fetch(`${API}/token?${params}`)
     if (tokenRes.status === 429) throw new Error(TOO_MANY)
     if (!tokenRes.ok) throw new Error('Sunucuya ulaşılamadı. Biraz sonra tekrar dene.')
@@ -43,8 +60,10 @@ export async function sendWebhook(payload) {
       body: JSON.stringify({ ...payload, jwt: token }),
     })
     if (res.status === 429) throw new Error(TOO_MANY)
-    if (res.status === 400) throw new Error('Bilgilerden biri geçersiz görünüyor; telefon ve e-postayı kontrol edip tekrar dene.')
+    if (res.status === 400) throw new Error(INVALID[payload.event] || INVALID.default)
+    if (res.status === 502) throw new Error('Şu an yanıt veremedim. Biraz sonra tekrar sorar mısın?')
     if (!res.ok) throw new Error('Sunucu isteği kabul etmedi. Sayfayı yenileyip tekrar dene.')
+    return await res.json().catch(() => ({}))
   } catch (err) {
     if (err instanceof TypeError) throw new Error('Gönderilemedi. İnternet bağlantını kontrol edip tekrar dene.')
     throw err

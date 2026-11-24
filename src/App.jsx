@@ -6,6 +6,7 @@ import StockNotifyForm from './components/StockNotifyForm.jsx'
 import CatalogQr from './components/CatalogQr.jsx'
 import CategoryFilter from './components/CategoryFilter.jsx'
 import PrivacyPolicy from './components/PrivacyPolicy.jsx'
+import AskQuestion from './components/AskQuestion.jsx'
 import { products } from './data/products.js'
 
 // Kategoriler veriden çıkarılır; yeni kategori eklemek için yalnızca products.js'e ürün eklemek yeter.
@@ -56,6 +57,8 @@ export default function App() {
           <StockNotifyForm product={activeForm.product} onDone={closeForm} />
         </FormDialog>
       )}
+
+      <AskQuestion />
 
       <CatalogQr />
 

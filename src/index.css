@@ -223,6 +223,7 @@ body {
 }
 .btn:focus-visible,
 .field input:focus-visible,
+.field textarea:focus-visible,
 .form-dialog__close:focus-visible {
   outline: 3px solid var(--focus);
   outline-offset: 2px;
@@ -271,7 +272,8 @@ body {
 .form__product { margin: 0 0 4px; color: var(--muted); }
 .field { display: flex; flex-direction: column; gap: 4px; font-size: 0.95rem; }
 .field small { color: var(--muted); font-size: 0.85em; }
-.field input {
+.field input,
+.field textarea {
   font: inherit;
   min-height: 44px;
   padding: 8px 12px;
@@ -284,6 +286,48 @@ body {
 .form .btn { align-self: flex-start; margin-top: 4px; }
 .form__error { margin: 0; color: var(--danger); }
 .form-success p { margin: 0 0 16px; }
+.field textarea { min-height: 88px; resize: vertical; line-height: 1.5; }
+
+/* Soru Sor: sorular krem paspartu zeminde, yanıtlar ceviz çizgiyle */
+.ask {
+  width: min(720px, calc(100% - 32px));
+  margin: 48px auto 0;
+  padding: 24px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: var(--shadow-soft);
+}
+.ask h2 { margin: 0; font-size: 1.4rem; }
+.ask__intro { margin: 6px 0 20px; color: var(--muted); }
+.ask__log {
+  list-style: none;
+  margin: 0 0 20px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.ask__turn { display: flex; flex-direction: column; gap: 8px; }
+.ask__question,
+.ask__answer { margin: 0; white-space: pre-line; overflow-wrap: anywhere; }
+.ask__question {
+  align-self: flex-end;
+  max-width: 85%;
+  padding: 8px 14px;
+  border-radius: 14px 14px 4px 14px;
+  background: var(--mat);
+  color: var(--on-mat);
+}
+.ask__answer {
+  max-width: 92%;
+  padding: 2px 0 2px 14px;
+  border-left: 3px solid var(--frame-lit);
+}
+.ask__answer--pending { color: var(--muted); font-style: italic; }
+@media (max-width: 480px) {
+  .ask { margin-top: 32px; padding: 20px 16px; }
+}
 
 /* Katalog QR kodu */
 .qr {

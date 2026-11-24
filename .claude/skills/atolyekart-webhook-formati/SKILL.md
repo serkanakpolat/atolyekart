@@ -31,6 +31,16 @@ Webhook'lar eğitmenin verdiği **veri sözleşmesine** uyar. Alan adları, sır
 | `email` | string | form, zorunlu |
 | `source` | string | sabit `"atolyekart-web"` |
 
+### Soru — `event: "question_asked"`
+| Alan | Tür | Kaynak |
+|---|---|---|
+| `event` | string | sabit `"question_asked"` |
+| `question` | string | `AskQuestion` alanı, 3–500 karakter, `trim()` edilir |
+| `sessionId` | string | sayfa açıkken sabit UUID; n8n hafızası buna bağlı |
+| `source` | string | sabit `"atolyekart-web"` |
+
+Ürüne bağlı değil: token `productId` olmadan alınır. Diğer olaylardan farkı yanıtın senkron olması; `/api/webhook` n8n'in AI yanıtını bekleyip `{ ok, answer }` döner.
+
 Örnek:
 ```json
 { "event": "order_created", "name": "Ayşe", "productId": "algi-karakalem-seti",

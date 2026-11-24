@@ -1,6 +1,6 @@
 // Sunucu tarafı payload doğrulaması: istemci kontrolleri atlatılabilir, son söz burada.
 import { products } from '../src/data/products.js'
-import { EMAIL_PATTERN } from '../src/lib/validation.js'
+import { EMAIL_PATTERN, QUESTION_MIN, QUESTION_MAX } from '../src/lib/validation.js'
 
 const SOURCE = 'atolyekart-web'
 const EMAIL = new RegExp(`^${EMAIL_PATTERN}$`)
@@ -9,6 +9,19 @@ const PHONE = /^(\+90|0)?5\d{9}$/
 const FIELDS = {
   order_created: ['event', 'name', 'productId', 'productName', 'phone', 'email', 'quantity', 'source', 'jwt'],
   stock_notification_requested: ['event', 'name', 'productId', 'productName', 'email', 'source', 'jwt'],
+  question_asked: ['event', 'question', 'sessionId', 'source', 'jwt'],
+}
+
+const SESSION_ID = /^[A-Za-z0-9-]{8,64}$/
+
+function checkQuestion(body) {
+  if (typeof body.question !== 'string') return 'soru eksik'
+  const length = body.question.trim().length
+  if (length < QUESTION_MIN || length > QUESTION_MAX) return `soru ${QUESTION_MIN}–${QUESTION_MAX} karakter olmalı`
+  // Satır sonu ve sekme serbest, diğer kontrol karakterleri değil.
+  if (/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(body.question)) return 'soru geçersiz karakter içeriyor'
+  if (typeof body.sessionId !== 'string' || !SESSION_ID.test(body.sessionId)) return 'oturum kimliği geçersiz'
+  return null
 }
 
 function checkName(name) {
@@ -38,6 +51,7 @@ export function validatePayload(body) {
   if (missing.length) return `eksik alan: ${missing.join(', ')}`
 
   if (body.source !== SOURCE) return 'source geçersiz'
+  if (body.event === 'question_asked') return checkQuestion(body)
 
   const product = products.find((p) => p.id === body.productId)
   if (!product) return 'ürün bulunamadı'
