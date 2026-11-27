@@ -29,7 +29,7 @@ export function buildStockPayload(product, { name, email }) {
   }
 }
 
-// "Soru Sor": ürüne bağlı değil. sessionId sayfa açıkken sabit kalır; n8n'deki hafıza buna göre tutulur.
+// "Soru Sor": ürüne bağlı değil. sessionId ziyaretçi başına sabit (localStorage); n8n'deki Redis hafızası buna göre tutulur.
 export function buildQuestionPayload({ question, sessionId }) {
   return {
     event: 'question_asked',

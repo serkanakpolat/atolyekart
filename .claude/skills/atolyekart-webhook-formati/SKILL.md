@@ -36,7 +36,7 @@ Webhook'lar eğitmenin verdiği **veri sözleşmesine** uyar. Alan adları, sır
 |---|---|---|
 | `event` | string | sabit `"question_asked"` |
 | `question` | string | `AskQuestion` alanı, 3–500 karakter, `trim()` edilir |
-| `sessionId` | string | sayfa açıkken sabit UUID; n8n hafızası buna bağlı |
+| `sessionId` | string | ziyaretçi başına sabit UUID (`localStorage`); n8n'deki Redis hafızası buna bağlı |
 | `source` | string | sabit `"atolyekart-web"` |
 
 Ürüne bağlı değil: token `productId` olmadan alınır. Diğer olaylardan farkı yanıtın senkron olması; `/api/webhook` n8n'in AI yanıtını bekleyip `{ ok, answer }` döner.

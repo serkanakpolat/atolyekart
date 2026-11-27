@@ -325,6 +325,7 @@ body {
   border-left: 3px solid var(--frame-lit);
 }
 .ask__answer--pending { color: var(--muted); font-style: italic; }
+.ask__actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
 @media (max-width: 480px) {
   .ask { margin-top: 32px; padding: 20px 16px; }
 }
